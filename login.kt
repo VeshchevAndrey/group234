@@ -87,11 +87,14 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun TestUI(){
-    val message = remember { mutableStateOf("") }
+    val usernames = arrayOf("admin", "teacher", "student")
+    val login = remember { mutableStateOf("") }
+    val password = remember { mutableStateOf("") }
+    val isError = remember { mutableStateOf(false) }
     Column(modifier = Modifier
         .fillMaxWidth(1f), horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text("Enter your name:", modifier = Modifier
+        Text("Login:", modifier = Modifier
             .padding(0.dp, 3.dp)
             .background(Color(0xFF3F51B5))
             .padding(0.dp, 3.dp)
@@ -101,13 +104,35 @@ fun TestUI(){
             textDecoration = TextDecoration.None, textAlign = TextAlign.Justify,
             style = TextStyle(textIndent = TextIndent(10.sp, 5.sp), textDirection = TextDirection.Ltr)
         )
-        OutlinedTextField(value = message.value, modifier = Modifier
-            .fillMaxWidth(1f),
-            onValueChange = {newText -> message.value = newText},
+        OutlinedTextField(value = login.value, modifier = Modifier
+            .fillMaxWidth(1f)
+            .padding(vertical = 5.dp),
+            onValueChange = {
+                newText -> login.value = newText
+                isError.value = false
+                            },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             textStyle = TextStyle(fontSize = 20.sp),
-            placeholder = {Text("Your name")},
-            trailingIcon = { IconButton(onClick = {message.value = ""})  {
+            placeholder = {Text("Username")},
+            trailingIcon = { IconButton(onClick = {login.value = ""})  {
+                Icon(Icons.Filled.Delete, contentDescription = "Clear field")
+            }},
+            colors = OutlinedTextFieldDefaults.colors(
+                cursorColor = Color(0xFF3F51B5),
+                unfocusedContainerColor = Color(0xFFC9D0D3),
+                focusedContainerColor = Color.White,
+                focusedBorderColor = Color(0xFF3F51B5)
+            ),
+            isError = isError.value
+        )
+        OutlinedTextField(value = password.value, modifier = Modifier
+            .fillMaxWidth(1f)
+            .padding(vertical = 5.dp),
+            onValueChange = {newText -> password.value = newText},
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+            textStyle = TextStyle(fontSize = 20.sp),
+            placeholder = {Text("Password")},
+            trailingIcon = { IconButton(onClick = {password.value = ""})  {
                 Icon(Icons.Filled.Delete, contentDescription = "Clear field")
             }},
             colors = OutlinedTextFieldDefaults.colors(
@@ -118,9 +143,9 @@ fun TestUI(){
             )
         )
         Button(onClick = {
-            if (message.value != "") {
-                message.value = ""
-                }
+            if (login.value !in usernames){
+                isError.value = true
+            }
         },
             shape = RectangleShape,
             elevation = ButtonDefaults.buttonElevation(
@@ -143,3 +168,25 @@ fun TestUI(){
 fun TestPreview(){
     TestUI()
 }
+
+// МОДИФИКАТОРЫ
+// .background() - изменяет задний фон элемента. Принимает 2 аргумента:
+// color - цвет заднего фона
+// shape - форма закрашенного заднего фона
+// .padding() - устанавливает отступы от объекта. Можно указать значение для любой из 4-х сторон
+// .offset - сдвиг элемента.
+//
+// Размеры
+// .size - указывает размер элемента в .dp
+// .height() - указывает высоту элемента в .dp
+// .width()  - указывает ширину элемента в .dp
+// .fillMaxHeight() - Растянуть объект по всей высоте контейнера
+// .fillMaxWidth() - Растянуть объект по всей ширине контейнера
+// .fillMaxSize()  - Растянуть объект на весь контейнер
+// .widthIn(50.dp, 150.dp) - ограничение размера элемента по ширине
+// .heightIn(50.dp, 150.dp) - ограничение размера элемента по высоте
+// .sizeIn(50.dp, 50.dp, 150.dp, 150.dp) - ограничение размера элемента по ширине и высоте
+//
+// Прокрутка
+// .verticalScroll(rememberScrollState()) - создание вертикальной прокрутки содержимого элемента
+// .horizontalScroll(rememberScrollState()) - создание горизонтальной прокрутки прокрутки содержимого элемента
